@@ -5,32 +5,26 @@ async function countGames(page: Page) {
   return await page.locator('ul > li').count();
 }
 
-test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+// Clear all games before each test
+test.beforeEach(async ({ page, request }) => {
+  const response = await request.get('/api/games');
+  const games = await response.json();
 
-  await page.evaluate(async () => {
-    const response = await fetch(`/api/games`);
-    const games = await response.json();
-    await Promise.all(
-      games.map((game: any) =>
-        fetch(`/api/game?id=${game.id}`, { method: 'DELETE' })
-      )
-    );
-    await new Promise((res) => setTimeout(res, 500));
-  });
+  for (const game of games) {
+    await request.delete(`/api/games/${game.id}`);
+  }
+
+  await page.goto('/');
 });
 
-test.afterEach(async ({ page }) => {
-  await page.evaluate(async () => {
-    const response = await fetch(`/api/games`);
-    const games = await response.json();
-    await Promise.all(
-      games.map((game: { id: string }) =>
-        fetch(`/api/game?id=${game.id}`, { method: 'DELETE' })
-      )
-    );
-    await new Promise((res) => setTimeout(res, 300));
-  });
+// Clean up after each test as well (optional, for safety)
+test.afterEach(async ({ request }) => {
+  const response = await request.get('/api/games');
+  const games = await response.json();
+
+  for (const game of games) {
+    await request.delete(`/api/games/${game.id}`);
+  }
 });
 
 test('should initialize with an empty game list', async ({ page }) => {
