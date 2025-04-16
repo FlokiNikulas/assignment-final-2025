@@ -36,7 +36,6 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@veigareli/eslint-plugin-no-moment": "^1.0.1",
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^3.0.9",
     "eslint": "^8.57.1",
