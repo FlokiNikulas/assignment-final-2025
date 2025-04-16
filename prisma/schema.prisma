@@ -3,10 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgres"
-  url      = env("DATABASE_URL")
+  provider   = "postgres"
+  url        = env("DATABASE_URL")
 }
-
 
 model Game {
   id           String   @id @default(uuid())
