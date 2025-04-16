@@ -9,13 +9,12 @@ on:
     branches:
       - '**'
   
-  jobs:
+jobs:
 
-    preview-deploy:
+  preview-deploy:
 
-    production-deploy:
+  production-deploy:
 
-    unit-tests:
+  unit-tests:
 
-    e2e-tests:
-
+  e2e-tests:
