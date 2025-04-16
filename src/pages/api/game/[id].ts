@@ -1,34 +1,59 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { getGameById, updateGame } from "../../../lib/gameStore";
+import '../../../config/tracing';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { getGameById, updateGame } from '../../../lib/gameStore';
+import { dogstatsd } from '../../../config/tracing';
 
 export default async function game(req: NextApiRequest, res: NextApiResponse) {
-  switch (req.method) {
-    case "GET":
-      if (!req.query.id) {
-        return res.status(400).send("Id parameter required.");
-      }
+  const { id } = req.query;
 
-      const game = await getGameById(req.query.id.toString());
+  if (req.method === 'GET') {
+    dogstatsd.increment('api.games.requests');
+    dogstatsd.increment('api.games.get.requests');
 
+    try {
+      const game = await getGameById(id as string);
       if (!game) {
-        return res.status(404);
+        dogstatsd.increment('api.games.get.notfound');
+        return res.status(404).send('Game not found!');
       }
 
+      // Increment success metrics
+      dogstatsd.increment('api.games.get.success');
       return res.status(200).json(game);
+    } catch (error) {
+      // Increment error metrics
+      dogstatsd.increment('api.games.get.error');
+      dogstatsd.increment('api.database.connection.errors');
 
-    case "PUT":
-      try {
-        const updatedGame = await updateGame(
-          req.query.id.toString(),
-          req.body.moves
-        );
-
-        return res.status(200).json(updatedGame);
-      } catch (error) {
-        return res.status(500).send("Something went horribly wrong");
-      }
-
-    default:
-      return res.status(500).send("Method not allowed");
+      console.error('Error getting game:', error);
+      return res.status(500).send('Database error!');
+    }
   }
+
+  if (req.method === 'PUT') {
+    dogstatsd.increment('api.games.requests');
+    dogstatsd.increment('api.games.put.requests');
+
+    try {
+      const { moves, winner } = req.body;
+      const updatedGame = await updateGame(id as string, moves, winner);
+
+      // Increment success metrics
+      dogstatsd.increment('api.games.put.success');
+      dogstatsd.increment('api.games.moves.count');
+
+      return res.status(200).json(updatedGame);
+    } catch (error) {
+      // Increment error metrics
+      dogstatsd.increment('api.games.put.error');
+      dogstatsd.increment('api.database.connection.errors');
+
+      console.error('Error updating game:', error);
+      return res.status(500).send('Database error!');
+    }
+  }
+
+  // Increment metric for unsupported methods
+  dogstatsd.increment('api.games.methodnotallowed');
+  return res.status(405).send('Method not allowed');
 }

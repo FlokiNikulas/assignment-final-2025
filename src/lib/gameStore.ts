@@ -1,53 +1,50 @@
-import { Sign } from "../utils/constants";
-import { prisma } from "./prisma";
+import { PrismaClient } from '@prisma/client';
+import { Sign } from '../utils/constants';
+
+const prisma = new PrismaClient();
 
 export interface Game {
   id: string;
-  player1_name: string;
+  player1_name?: string | null;
   player2_name?: string | null;
   moves: Sign[] | string[];
   createdAt?: Date;
+  winner?: string | null;
 }
 
-const EMPTY_MOVES = Array(9).fill("");
-
+// Create a new game
 export async function createGame(
-  playerName: string,
-  secondPlayerName: string
+  player1?: string,
+  player2?: string
 ): Promise<Game> {
-  await prisma.$connect();
-
   const game = await prisma.game.create({
     data: {
-      player1_name: playerName,
-      player2_name: secondPlayerName,
-      moves: EMPTY_MOVES,
+      player1_name: player1 || 'Player 1',
+      player2_name: player2 || 'Player 2',
+      moves: Array(9).fill(''),
     },
   });
   return game;
 }
 
+// Get game by ID
 export async function getGameById(gameId: string): Promise<Game | null> {
-  await prisma.$connect();
   return await prisma.game.findUnique({ where: { id: gameId } });
 }
 
+// Update a game (e.g., after a move)
 export async function updateGame(
   gameId: string,
-  moves: string[]
+  moves: string[],
+  winner?: string
 ): Promise<Game> {
-  await prisma.$connect();
   return await prisma.game.update({
-    where: {
-      id: gameId,
-    },
-    data: {
-      moves: moves,
-    },
+    where: { id: gameId },
+    data: { moves, winner },
   });
 }
 
+// Get all games
 export async function getGames(): Promise<Game[]> {
-  await prisma.$connect();
   return await prisma.game.findMany();
 }

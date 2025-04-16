@@ -1,10 +1,8 @@
-import { Game } from "../lib/gameStore";
-import { EMOJI, pepTalks, Sign } from "./constants";
+import { Game } from '../lib/gameStore';
+import { EMOJI, pepTalks, Sign } from './constants';
 
-export function calculateWinner(
-  squares: Sign[] | string[]
-): Sign | null | string {
-  const lines = [
+export function calculateWinner(moves: string[]): string | null {
+  const winningCombinations = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -14,12 +12,17 @@ export function calculateWinner(
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+
+  for (const [a, b, c] of winningCombinations) {
+    if (moves[a] && moves[a] === moves[b] && moves[a] === moves[c]) {
+      return moves[a];
     }
   }
+
+  if (!moves.includes('')) {
+    return 'draw';
+  }
+
   return null;
 }
 
@@ -32,7 +35,7 @@ export function getPlayerNameFromSign(
   } else if (sign === Sign.X) {
     return `${EMOJI[sign]} ${game?.player1_name} `;
   }
-  return "";
+  return '';
 }
 
 export function getWhosTurnItIs(moves: Sign[] | string[]): Sign | string {
