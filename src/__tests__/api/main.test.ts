@@ -204,7 +204,9 @@ describe('API - New Game', () => {
       status,
     } as unknown as NextApiResponse;
 
-    vi.spyOn(prisma.game, 'create').mockRejectedValue(new Error('Database error'));
+    vi.spyOn(prisma.game, 'create').mockRejectedValue(
+      new Error('Database error')
+    );
 
     await newGame(req, res);
 

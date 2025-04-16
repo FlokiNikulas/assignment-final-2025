@@ -162,7 +162,9 @@ describe('GameRow Component', () => {
     vi.spyOn(gameUtils, 'calculateWinner').mockReturnValue(Sign.X);
     render(<GameRow game={mockGame} />);
     expect(
-      screen.getByText((content) => content.includes('Alice') && content.includes('🎉'))
+      screen.getByText(
+        (content) => content.includes('Alice') && content.includes('🎉')
+      )
     ).toBeInTheDocument();
   });
 
@@ -192,14 +194,18 @@ describe('WinnerAnnouncement Component', () => {
   it('renders the winner correctly when X wins', () => {
     render(<WinnerAnnouncement winner={Sign.X} game={mockGame} />);
     expect(
-      screen.getByText((content) => content.includes('Alice') && content.includes('Won'))
+      screen.getByText(
+        (content) => content.includes('Alice') && content.includes('Won')
+      )
     ).toBeInTheDocument();
   });
 
   it('renders the winner correctly when O wins', () => {
     render(<WinnerAnnouncement winner={Sign.O} game={mockGame} />);
     expect(
-      screen.getByText((content) => content.includes('Bob') && content.includes('Won'))
+      screen.getByText(
+        (content) => content.includes('Bob') && content.includes('Won')
+      )
     ).toBeInTheDocument();
   });
 

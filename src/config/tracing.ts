@@ -11,7 +11,6 @@ if (typeof window === 'undefined') {
   const dogstatsd = new StatsD();
 
   dogstatsd.increment('page.views');
-
 } else {
   console.warn('Tracing is only available on the server side.');
 }
