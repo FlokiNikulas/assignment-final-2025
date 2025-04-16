@@ -1,0 +1,21 @@
+name: Deploy to Vercel and testing
+
+on:
+  push:
+    branches:
+      - main
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+  
+  jobs:
+
+    preview-deploy:
+
+    production-deploy:
+
+    unit-tests:
+
+    e2e-tests:
+
