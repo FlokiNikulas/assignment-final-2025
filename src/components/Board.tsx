@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import styles from "../styles/Board.module.css";
-import { Sign } from "../utils/constants";
-import { calculateWinner, getWhosTurnItIs } from "../utils/gameUtils";
-import Cell from "./Cell";
+import React, { useEffect, useState } from 'react';
+import styles from '../styles/Board.module.css';
+import { Sign } from '../utils/constants';
+import { calculateWinner, getWhosTurnItIs } from '../utils/gameUtils';
+import Cell from './Cell';
+import { WinnerAnnouncement } from './WinnerAnnouncement';
+import game from '@/pages/api/game/[id]';
 
 interface Props {
   onMove: (moves: string[]) => void;
@@ -14,21 +16,17 @@ export default function Board({ onMove, moves, readOnly }: Props): JSX.Element {
   const [currentPlayer, setCurrentPlayer] = useState(getWhosTurnItIs(moves));
 
   function handleClick(cellNumber: number) {
+    if (readOnly || calculateWinner(moves)) {
+      return;
+    }
+
     const movesCopy = [...moves];
-    if (readOnly) {
-      return;
-    }
-    if (calculateWinner(movesCopy)) {
-      return;
-    }
     if (movesCopy[cellNumber]) {
       return;
     }
 
     movesCopy[cellNumber] = currentPlayer;
-
     const nextPlayer = currentPlayer === Sign.X ? Sign.O : Sign.X;
-
     setCurrentPlayer(nextPlayer);
     onMove(movesCopy);
   }

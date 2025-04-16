@@ -1,10 +1,10 @@
-import moment from "moment";
-import Link from "next/link";
-import { Game } from "../lib/gameStore";
-import styles from "../styles/Row.module.css";
-import { Sign } from "../utils/constants";
-import { calculateWinner, getPlayerNameFromSign } from "../utils/gameUtils";
-import Board from "./Board";
+import { formatDistanceToNow } from 'date-fns';
+import Link from 'next/link';
+import { Game } from '../lib/gameStore';
+import styles from '../styles/Row.module.css';
+import { Sign } from '../utils/constants';
+import { calculateWinner, getPlayerNameFromSign } from '../utils/gameUtils';
+import Board from './Board';
 
 interface Props {
   game: Game;
@@ -12,6 +12,7 @@ interface Props {
 
 export function GameRow({ game }: Props) {
   const winner = calculateWinner(game.moves);
+
   return (
     <Link href={`/game/${game.id}`}>
       <div className={styles.row}>
@@ -19,15 +20,20 @@ export function GameRow({ game }: Props) {
           <div>
             <div>
               {getPlayerNameFromSign(Sign.X, game)}
-              {winner === Sign.X ? "🎉" : null}
+              {winner === Sign.X ? '🎉' : null}
             </div>
             <div>
               {getPlayerNameFromSign(Sign.O, game)}
-              {winner === Sign.O ? "🎉" : null}
+              {winner === Sign.O ? '🎉' : null}
             </div>
           </div>
           <div className={styles.dateFromNow}>
-            Created: {moment(game.createdAt).fromNow()}
+            Created:{' '}
+            {game.createdAt
+              ? formatDistanceToNow(new Date(game.createdAt), {
+                  addSuffix: true,
+                })
+              : 'Unknown'}
           </div>
         </div>
         <div>

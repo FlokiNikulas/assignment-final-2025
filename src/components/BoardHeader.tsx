@@ -1,12 +1,12 @@
-import { Game } from "../lib/gameStore";
+import { Game } from '../lib/gameStore';
 import {
   calculateWinner,
   getPlayerNameFromSign,
   getRandomPepTalk,
   getWhosTurnItIs,
-} from "../utils/gameUtils";
-import styles from "../styles/Home.module.css";
-import { WinnerAnnouncement } from "./WinnerAnnouncement";
+} from '../utils/gameUtils';
+import styles from '../styles/Home.module.css';
+import { WinnerAnnouncement } from './WinnerAnnouncement';
 
 interface Props {
   game: Game;
