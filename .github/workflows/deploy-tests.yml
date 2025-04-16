@@ -73,7 +73,6 @@ jobs:
       - name: Reset Database Before Tests
         run: |
           echo "Resetting Database..."
-          npm run prisma:reset
 
       - name: Compile Next.js App
         run: npm run build
